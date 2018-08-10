@@ -7,11 +7,23 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="filePath" HorizontalAlignment="Left" Height="23" Margin="157,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="246"/>
-        <Button Content="选择文件" HorizontalAlignment="Left" Margin="77,34,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <TextBox x:Name="rootWord" HorizontalAlignment="Left" Height="23" Margin="157,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160"/>
-        <Button Content="开始分词" HorizontalAlignment="Left" Margin="328,72,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.131,0.734" Click="Button_Click_1"/>
-        <Label Content="输入词根：" HorizontalAlignment="Left" Margin="77,74,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox x:Name="filePath" HorizontalAlignment="Left" Height="23" Margin="204,115,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="246"/>
+        <Button Content="选择文件" HorizontalAlignment="Left" Margin="124,115,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <TextBox x:Name="rootWord" HorizontalAlignment="Left" Height="23" Margin="213,157,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160"/>
+        <Button Content="开始分词" HorizontalAlignment="Left" Margin="383,161,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.131,0.734" Click="Button_Click_1"/>
+        <Label Content="输入词根：" HorizontalAlignment="Left" Margin="124,155,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox x:Name="directoryPath" HorizontalAlignment="Left" Height="23" Margin="296,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" RenderTransformOrigin="-0.065,-2.531"/>
+        <Label Content="须先输入保存的目录路径" HorizontalAlignment="Left" Margin="124,34,0,0" VerticalAlignment="Top" Width="154"/>
+        <Label Content="统计前后缀词：" HorizontalAlignment="Left" Margin="38,244,0,0" VerticalAlignment="Top" Width="123"/>
+        <TextBox x:Name="countFile" HorizontalAlignment="Left" Height="23" Margin="227,244,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="246"/>
+        <Button x:Name="CountChooseFile" Content="选择文件" HorizontalAlignment="Left" Margin="147,244,0,0" VerticalAlignment="Top" Width="75" Click="CountChooseFile_Click"/>
+        <Button Content="开始统计" HorizontalAlignment="Left" Margin="518,244,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+        <Label x:Name="ApartResult" Content="分词进度：请稍后" HorizontalAlignment="Left" Margin="463,154,0,0" VerticalAlignment="Top" Width="159" FontSize="16" Background="#FFFFFBFD" Foreground="#FFF10D0D"/>
+        <Label x:Name="CountResult" Content="统计进度：" HorizontalAlignment="Left" Margin="157,272,0,0" VerticalAlignment="Top" Width="216" FontSize="16" Background="#FFFFFBFD" Foreground="#FFF10D0D"/>
+        <Label Content="词根分词：" HorizontalAlignment="Left" Margin="38,112,0,0" VerticalAlignment="Top" Width="75"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="129" Margin="30,77,0,0" VerticalAlignment="Top" Width="610"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="85" Margin="30,232,0,0" VerticalAlignment="Top" Width="610"/>
+        <Label x:Name="DirectoryResult" Content="" HorizontalAlignment="Left" Margin="463,34,0,0" VerticalAlignment="Top" Width="159" FontSize="16" Background="#FFFFFBFD" Foreground="#FFF10D0D"/>
 
     </Grid>
 </Window>

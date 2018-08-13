@@ -35,7 +35,7 @@ namespace PublicFramework
         public Microsoft.Office.Interop.Excel.Worksheet ws;
 
 
-        public ExcelOperator(string directoryPath,string filePath,string rootWords)
+        public ExcelOperator(string directoryPath, string filePath, string rootWords)
         {
             this.FilePath = filePath;
             this.SaveDirectoryPath = directoryPath.LastIndexOf(@"\") == (directoryPath.Length - 1)
@@ -44,12 +44,12 @@ namespace PublicFramework
             this.RootWords = rootWords.Split(',').ToList();
         }
 
-        public void Open()//打开一个Microsoft.Office.Interop.Excel文件
+        public void Open() //打开一个Microsoft.Office.Interop.Excel文件
         {
             app = new Microsoft.Office.Interop.Excel.Application();
             wbs = app.Workbooks;
             wb = wbs.Add(FilePath);
-            ws = (Microsoft.Office.Interop.Excel.Worksheet)wb.Worksheets["Sheet1"];
+            ws = (Microsoft.Office.Interop.Excel.Worksheet) wb.Worksheets["Sheet1"];
 
             this.RowCount = ws.UsedRange.Rows.Count;
             this.ColumnCount = ws.UsedRange.Columns.Count;
@@ -67,7 +67,11 @@ namespace PublicFramework
 
             for (int index = 1; index <= RowCount; index++)
             {
-                OriginalWords.Add(new OriginalWord(){Word = rangeValue.GetValue(index,1).ToString(),DailySearchCount = int.Parse(rangeValue.GetValue(index,3).ToString())});
+                OriginalWords.Add(new OriginalWord()
+                {
+                    Word = rangeValue.GetValue(index, 1).ToString(),
+                    DailySearchCount = int.Parse(rangeValue.GetValue(index, 3).ToString())
+                });
             }
             Close();
         }
@@ -77,7 +81,7 @@ namespace PublicFramework
             foreach (string rootWord in RootWords)
             {
                 int rootWordLength = rootWord.Length;
-                if(rootWordLength==0)
+                if (rootWordLength == 0)
                     break;
                 foreach (OriginalWord originalWord in OriginalWords)
                 {
@@ -97,7 +101,7 @@ namespace PublicFramework
                     }
                 }
 
-                OriginalWords = OriginalWords.Where(o => o.PrefixWord != null&&o.SuffixWord!=null).ToList();
+                OriginalWords = OriginalWords.Where(o => o.PrefixWord != null && o.SuffixWord != null).ToList();
             }
             return OriginalWords;
         }
@@ -109,7 +113,8 @@ namespace PublicFramework
             wbs = app.Workbooks;
             wb = wbs.Add(true);
 
-            Microsoft.Office.Interop.Excel.Worksheet ws = (Microsoft.Office.Interop.Excel.Worksheet)wb.Worksheets["Sheet1"];
+            Microsoft.Office.Interop.Excel.Worksheet ws =
+                (Microsoft.Office.Interop.Excel.Worksheet) wb.Worksheets["Sheet1"];
 
             for (int i = 1; i <= apartResult.Count; i++)
             {
@@ -120,7 +125,7 @@ namespace PublicFramework
                 ws.Cells[i, 5] = apartResult[i - 1].RootWord;
 
             }
-            SaveAs(RootWords[0]+"分词");
+            SaveAs(RootWords[0] + "分词");
             Close();
         }
 
@@ -153,6 +158,8 @@ namespace PublicFramework
 
         public void CountSearch()
         {
+            List<CountSearch> countResultList = new List<CountSearch>();
+
             var beforeQuery = from originalWord in OriginalWords
                 group originalWord by originalWord.PrefixWord
                 into g
@@ -163,7 +170,23 @@ namespace PublicFramework
                     WordCount = g.Count(),
                     WordSearch = g.Sum(item => item.DailySearchCount)
                 };
-            var beforeList = beforeQuery.ToList();
+
+            foreach (CountSearch countSearch in beforeQuery)
+            {
+                var result = beforeQuery.Where(q => q.FixWord.Contains(countSearch.FixWord));
+                if (result.Any())
+                {
+                    countResultList.Add(new CountSearch()
+                    {
+                        FixWord = countSearch.FixWord,
+                        WordCount = result.Sum(r => r.WordCount),
+                        WordSearch = result.Sum(r => r.WordSearch),
+                        WordType = countSearch.WordType
+                    });
+                }
+            }
+
+          //  var beforeList = beforeQuery.ToList();
 
             var afterQuery = from originalWord in OriginalWords
                 group originalWord by originalWord.SuffixWord
@@ -175,11 +198,26 @@ namespace PublicFramework
                     WordCount = g.Count(),
                     WordSearch = g.Sum(item => item.DailySearchCount)
                 };
-            var afterList = afterQuery.ToList();
-            beforeList.AddRange(afterList);
-            beforeList.Sort((a, b) => -a.WordSearch.CompareTo(b.WordSearch));
+            foreach (CountSearch countSearch in afterQuery)
+            {
+                var result = afterQuery.Where(q => q.FixWord.Contains(countSearch.FixWord));
+                if (result.Any())
+                {
+                    countResultList.Add(new CountSearch()
+                    {
+                        FixWord = countSearch.FixWord,
+                        WordCount = result.Sum(r => r.WordCount),
+                        WordSearch = result.Sum(r => r.WordSearch),
+                        WordType = countSearch.WordType
+                    });
+                }
+            }
+            //var afterList = afterQuery.ToList();
+            //beforeList.AddRange(afterList);
+            //beforeList.Sort((a, b) => -a.WordSearch.CompareTo(b.WordSearch));
+            countResultList.Sort((a, b) => -a.WordSearch.CompareTo(b.WordSearch));
 
-            FlushToFile(beforeList);
+            FlushToFile(countResultList);
 
         }
 
@@ -213,7 +251,9 @@ namespace PublicFramework
         {
             try
             {
-                wb.SaveAs(SaveDirectoryPath + @"\" + fileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                wb.SaveAs(SaveDirectoryPath + @"\" + fileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                    Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing,
+                    Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                 return true;
 
             }
